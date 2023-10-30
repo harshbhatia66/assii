@@ -13,11 +13,7 @@ public abstract class Enemy extends Entity implements Battleable {
 
     public Enemy(Position position, double health, double attack) {
         super(position.asLayer(Entity.CHARACTER_LAYER));
-        battleStatistics = new BattleStatistics(
-                health,
-                attack,
-                0,
-                BattleStatistics.DEFAULT_DAMAGE_MAGNIFIER,
+        battleStatistics = new BattleStatistics(health, attack, 0, BattleStatistics.DEFAULT_DAMAGE_MAGNIFIER,
                 BattleStatistics.DEFAULT_ENEMY_DAMAGE_REDUCER);
     }
 
@@ -43,11 +39,6 @@ public abstract class Enemy extends Entity implements Battleable {
     public void onDestroy(GameMap map) {
         Game g = map.getGame();
         g.unsubscribe(getId());
-    }
-
-    @Override
-    public void onMovedAway(GameMap map, Entity entity) {
-        return;
     }
 
     public abstract void move(Game game);
