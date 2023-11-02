@@ -1,6 +1,8 @@
 package dungeonmania.entities.enemies;
 
 import dungeonmania.Game;
+import dungeonmania.entities.collectables.potions.InvincibilityPotion;
+import dungeonmania.map.GameMap;
 import dungeonmania.util.Position;
 
 public class ZombieToast extends Enemy {
@@ -13,8 +15,13 @@ public class ZombieToast extends Enemy {
 
     @Override
     public void move(Game game) {
-        moveRandom(game);
+        GameMap map = game.getMap();
 
+        if (map.getPlayer().getEffectivePotion() instanceof InvincibilityPotion) {
+            moveWhenInvincible(game);
+        } else {
+            moveRandom(game);
+        }
     }
 
 }

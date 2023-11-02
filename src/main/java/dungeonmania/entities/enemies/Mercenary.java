@@ -1,9 +1,5 @@
 package dungeonmania.entities.enemies;
 
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-
 import dungeonmania.Game;
 import dungeonmania.battles.BattleStatistics;
 import dungeonmania.entities.Entity;
@@ -13,7 +9,6 @@ import dungeonmania.entities.collectables.Treasure;
 import dungeonmania.entities.collectables.potions.InvincibilityPotion;
 import dungeonmania.entities.collectables.potions.InvisibilityPotion;
 import dungeonmania.map.GameMap;
-import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class Mercenary extends Enemy implements Interactable {
@@ -88,7 +83,9 @@ public class Mercenary extends Enemy implements Interactable {
             moveWhenInvisible(game);
             return;
         } else if (map.getPlayer().getEffectivePotion() instanceof InvincibilityPotion) {
-            nextPos = moveWhenInvincible(game);
+            moveWhenInvincible(game);
+            return;
+
         } else {
             nextPos = moveNormally(game);
         }
@@ -108,34 +105,6 @@ public class Mercenary extends Enemy implements Interactable {
 
     private void moveWhenInvisible(Game game) {
         moveRandom(game);
-    }
-
-    private Position moveWhenInvincible(Game game) {
-        GameMap map = game.getMap();
-        Position plrDiff = Position.calculatePositionBetween(map.getPlayer().getPosition(), getPosition());
-
-        Position moveX = (plrDiff.getX() >= 0) ? Position.translateBy(getPosition(), Direction.RIGHT)
-                : Position.translateBy(getPosition(), Direction.LEFT);
-        Position moveY = (plrDiff.getY() >= 0) ? Position.translateBy(getPosition(), Direction.UP)
-                : Position.translateBy(getPosition(), Direction.DOWN);
-        Position offset = getPosition();
-
-        if (plrDiff.getY() == 0 && map.canMoveTo(this, moveX))
-            offset = moveX;
-        else if (plrDiff.getX() == 0 && map.canMoveTo(this, moveY))
-            offset = moveY;
-        else if (Math.abs(plrDiff.getX()) >= Math.abs(plrDiff.getY())) {
-            if (map.canMoveTo(this, moveX))
-                offset = moveX;
-            else if (map.canMoveTo(this, moveY))
-                offset = moveY;
-        } else {
-            if (map.canMoveTo(this, moveY))
-                offset = moveY;
-            else if (map.canMoveTo(this, moveX))
-                offset = moveX;
-        }
-        return offset;
     }
 
     private Position moveNormally(Game game) {
