@@ -5,7 +5,6 @@ import java.util.List;
 import dungeonmania.Game;
 import dungeonmania.entities.Boulder;
 import dungeonmania.entities.Entity;
-import dungeonmania.map.GameMap;
 import dungeonmania.util.Position;
 
 public class Spider extends Enemy {
@@ -45,22 +44,19 @@ public class Spider extends Enemy {
     }
 
     @Override
-    public void move(Game gameInstance) {
-        Position upcomingPos = movementTrajectory.get(nextPositionElement);
-        GameMap gameMapInstance = gameInstance.getMap();
-        List<Entity> entityList = gameMapInstance.getEntities(upcomingPos);
-
-        if (entityList != null && !entityList.isEmpty()
-                && entityList.stream().anyMatch(entity -> entity instanceof Boulder)) {
+    public void move(Game game) {
+        Position nextPos = movementTrajectory.get(nextPositionElement);
+        List<Entity> entities = game.getMap().getEntities(nextPos);
+        if (entities != null && entities.size() > 0 && entities.stream().anyMatch(e -> e instanceof Boulder)) {
             forward = !forward;
             updateNextPosition();
             updateNextPosition();
         }
-        upcomingPos = movementTrajectory.get(nextPositionElement);
-        entityList = gameMapInstance.getEntities(upcomingPos);
-        if (entityList == null || entityList.isEmpty()
-                || entityList.stream().allMatch(entity -> entity.canMoveOnto(gameMapInstance, this))) {
-            gameMapInstance.moveTo(this, upcomingPos);
+        nextPos = movementTrajectory.get(nextPositionElement);
+        entities = game.getMap().getEntities(nextPos);
+        if (entities == null || entities.size() == 0
+                || entities.stream().allMatch(e -> e.canMoveOnto(game.getMap(), this))) {
+            game.getMap().moveTo(this, nextPos);
             updateNextPosition();
         }
     }
